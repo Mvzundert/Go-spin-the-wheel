@@ -1,0 +1,66 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spinwheel App</title>
+    <style>
+      canvas {
+        border: 2px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to Movie & Game Night</h1>
+    <canvas id="spinwheel" width="400" height="400"></canvas>
+    <button onclick="spinWheel()">Spin the Wheel</button>
+
+    <script>
+      function spinWheel() {
+        const canvas = document.getElementById("spinwheel");
+        const ctx = canvas.getContext("2d");
+
+        const sections = ["Person1", "Person2", "Person3", "Person4"];
+
+        const angle = Math.PI / sections.length;
+        const radius = canvas.width / 2;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the wheel sections
+        for (let i = 0; i < sections.length; i++) {
+          ctx.beginPath();
+          ctx.moveTo(radius, radius);
+          ctx.arc(radius, radius, radius, i * angle, (i + 1) * angle);
+          ctx.fillStyle = i % 2 === 0 ? "#FF5733" : "#3498db"; // Alternating colors
+          ctx.fill();
+        }
+
+        // Spin animation
+        const spins = Math.floor(Math.random() * 10) + 5; // Randomize the number of spins
+        const spinSpeed = Math.PI / 15;
+
+        let spinCount = 0;
+        function spinAnimation() {
+          spinCount++;
+          canvas.style.transform = `rotate(${spinCount * spinSpeed}rad)`;
+
+          if (spinCount < spins) {
+            requestAnimationFrame(spinAnimation);
+          } else {
+            const selectedSection =
+              Math.floor(
+                (2 * Math.PI - canvas.style.transform.replace(/[^\d.]/g, "")) /
+                  angle,
+              ) % sections.length;
+            alert(`Selected: ${sections[selectedSection]}`);
+            canvas.style.transform = ""; // Reset rotation
+          }
+        }
+
+        spinAnimation();
+      }
+    </script>
+  </body>
+</html>
